@@ -17,7 +17,6 @@ logo() {
 usage() {
 	logo
 	echo "Usage: " $0 "-u <user> -p <password> -h <host> -r <port> -n <dbname>"
-	echo " This is to operate with the geographic database"
     echo " Actions go in order: "
 	echo "    download-data Downloads the last packages of data available in GeoNames."
     echo "    drop-table If table with predefined name exists."
@@ -38,7 +37,7 @@ download_geonames_data() {
 	echo "Downloading GeoNames.org data..." 
     download_folder="$1"
     wget -c -P "$download_folder" -O "US.zip" http://download.geonames.org/export/zip/US.zip
-    unzip "*.zip" -d ./download
+    unzip "*.zip" -d -o ./download
     rm *.zip
 }
 
@@ -98,9 +97,6 @@ mysql -h $dbhost -P $dbport -u $dbusername -p$dbpassword $dbname < $dir/geonames
 
 echo "Importing postal code dumps into database $dbname"
 mysql -h $dbhost -P $dbport -u $dbusername -p$dbpassword --local-infile=1 $dbname < $dir/geonames_import_data.sql
-
-echo "Clearing download folder"
-rm -rf $download_folder
 
 if [ $? == 0 ]; then 
 	echo "[OK]"
